@@ -27,6 +27,8 @@ interface ProvidedPresenterOps {
     void onStart();
     void onStop();
     void PermissionsGranted(int requestCode);
+    void onGetLocation(double lat,double lon);
+
 }
 
     interface RequiredPresenterOps {

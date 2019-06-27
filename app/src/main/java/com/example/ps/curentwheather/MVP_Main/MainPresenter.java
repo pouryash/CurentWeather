@@ -19,14 +19,12 @@ import com.google.android.gms.location.LocationServices;
 import java.lang.ref.WeakReference;
 
 public class MainPresenter implements MVP.ProvidedPresenterOps,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-MVP.RequiredPresenterOps{
+        MVP.RequiredPresenterOps{
 
     WeakReference<MVP.RequiredViewOps> mView;
     MVP.ProvidedModelOps mModel ;
     Context con;
-    private GoogleApiClient googleApiClient;
-    double lat,lon;
+
 
 
     public MainPresenter(MVP.RequiredViewOps view, Context contex) {
@@ -47,46 +45,24 @@ MVP.RequiredPresenterOps{
 
     @Override
     public void onStart() {
-        if (googleApiClient != null) {
 
-            googleApiClient.connect();
-        }
     }
 
     @Override
     public void onStop() {
-        googleApiClient.disconnect();
+
     }
 
     @Override
     public void PermissionsGranted(int requestCode) {
-        googleApiClient = new GoogleApiClient.Builder(con, MainPresenter.this, MainPresenter.this).addApi(LocationServices.API).build();
 
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-        if (ContextCompat.checkSelfPermission(con, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-
-                Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                 lat = lastLocation.getLatitude();
-                 lon = lastLocation.getLongitude();
-                 mModel.getCurentWeather(lat,lon);
-            }
-
+    public void onGetLocation(double lat, double lon) {
+        mModel.getCurentWeather(lat,lon);
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     @Override
     public Context getAppContext() {

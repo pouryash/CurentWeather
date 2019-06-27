@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#023F38</color>
+    <color name="colorPrimaryDark">#000</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorDayMin">#32D2F8</color>
     <color name="colorDayMax">#005ED8</color>
@@ -9,5 +9,5 @@
     <color name="colorNightMix">#02072D</color>
     <color name="colorWاhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
-    <color name="colorStatusBarAfternon">#A32529</color>
+    <color name="colorStatusBarAfternon">#100202</color>
 </resources>

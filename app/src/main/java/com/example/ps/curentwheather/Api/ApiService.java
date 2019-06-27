@@ -19,6 +19,7 @@ public class ApiService {
     private static final String BASE_URL = "https://openweathermap.org/data/2.5/weather?";
     private static final String TAG = "APIServise";
     private static final String APPID = "b6907d289e10d714a6e88b30761fae22";
+    public Request request;
     private Context context;
     private double lat;
     private double lon;
@@ -70,16 +71,16 @@ public class ApiService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                onResultCallBack.OnError(error+"");
+                onResultCallBack.OnError(error);
                 error.printStackTrace();
             }
         });
-        Volley.newRequestQueue(context).add(jsonArrayRequest);
+        request = Volley.newRequestQueue(context).add(jsonArrayRequest);
 
     }
 
     public interface OnResultCallBack<T>{
         void OnRecived(T t);
-        void OnError(String message);
+        void OnError(VolleyError error);
     }
 }
