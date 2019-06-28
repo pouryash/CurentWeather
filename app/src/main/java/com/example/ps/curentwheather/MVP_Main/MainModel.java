@@ -26,13 +26,12 @@ private MVP.RequiredPresenterOps mPresenter;
         final ApiService apiService = new ApiService(mPresenter.getAppContext(),lat,lon);
         apiService.getWeather(new ApiService.OnResultCallBack<Weather>() {
             @Override
-            public void OnRecived(Weather weather) {
+            public void OnWeatherRecived(Weather weather) {
                 mPresenter.onResive(weather);
             }
 
             @Override
-            public void OnError(VolleyError error) {
-
+            public void OnWeatherError(VolleyError error) {
                 if (error instanceof NetworkError) {
                     mPresenter.onError("Cannot connect to Internet...Please check your connection and try again");
                     apiService.request.cancel();
@@ -51,6 +50,8 @@ private MVP.RequiredPresenterOps mPresenter;
                     mPresenter.onError(error+"");
                 }
             }
+
+
         });
     }
 }

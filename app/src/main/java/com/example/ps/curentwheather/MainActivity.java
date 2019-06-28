@@ -3,6 +3,7 @@ package com.example.ps.curentwheather;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -156,7 +157,12 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setupViews() {
 
-
+        mainRoot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,MoreDetails.class));
+            }
+        });
         mainDegree.setText(Math.round(weather.getWeatherTemprature()) + "° C");
         mainLocation.setText(weather.getCityName() + " , " + weather.getCountry(weather));
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss a");
@@ -177,7 +183,7 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorWاhite));
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        } else if (date.getHours() > 16 || date.getHours() < 20) {
+        } else if (date.getHours() > 17 || date.getHours() < 20) {
             mainRoot.setBackgroundResource(R.drawable.background_afternon);
             mainSun.setImageResource(R.drawable.ic_half_sun);
             Window window = this.getWindow();

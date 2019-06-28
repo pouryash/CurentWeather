@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.example.ps.curentwheather.Model.Weather;
 
-import java.util.List;
 
 public interface MVP {
 
@@ -23,7 +22,6 @@ interface RequiredViewOps{
 interface ProvidedPresenterOps {
 
     void setView(RequiredViewOps view);
-    void onMainactivityClicked();
     void onStart();
     void onStop();
     void PermissionsGranted(int requestCode);

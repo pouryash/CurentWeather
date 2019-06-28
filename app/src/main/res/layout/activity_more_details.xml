@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/moreDetail_Root"
+    android:background="@drawable/background_more_day"
+    android:orientation="vertical"
+    tools:context=".MoreDetails">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/moreDetail_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        tools:targetApi="lollipop" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/moreDetail_WeatherIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="8dp"
+            tools:src="@drawable/ic_mosty_sunny" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/moreDetail_TempTv"
+            android:layout_alignParentStart="true"
+            android:textSize="60sp"
+            android:fontFamily="@font/sans_bold"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/colorWاhite"
+            tools:text="23° C"/>
+        <TextView
+            android:id="@+id/moreDitail_Min_MaxTv"
+            android:layout_below="@id/moreDetail_TempTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/moreDetail_TempTv"
+            android:layout_alignStart="@id/moreDetail_TempTv"
+            android:fontFamily="@font/sans_bold"
+            android:textColor="@color/colorTextSecound"
+            android:gravity="start"
+            android:textSize="30sp"
+            tools:text="22°/15°"/>
+
+        <TextView
+            android:id="@+id/moreDetail_CityTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:drawableStart="@drawable/ic_location_on"
+            android:layout_marginStart="16dp"
+            android:paddingRight="8dp"
+            android:drawablePadding="4dp"
+            android:textSize="25sp"
+            android:background="@drawable/city_background"
+            android:textColor="@color/colorWاhite"
+            android:layout_below="@id/moreDitail_Min_MaxTv"
+            android:maxWidth="200dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            tools:text="Paris"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/moreDetail_HourRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/moreDetail_DayRv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

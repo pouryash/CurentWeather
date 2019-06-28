@@ -2,6 +2,8 @@ package com.example.ps.curentwheather.Model;
 
 import com.example.ps.curentwheather.R;
 
+import java.util.Date;
+
 public class Weather {
 
     private String weatherName;
@@ -15,6 +17,15 @@ public class Weather {
     private int pressure;
     private String cityName;
     private String country;
+    private Date time;
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
 
     public String getCountry(Weather weather) {
         if (weather.country.endsWith("IR")){

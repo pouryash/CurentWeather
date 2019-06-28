@@ -1,20 +1,9 @@
 package com.example.ps.curentwheather.MVP_Main;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.example.ps.curentwheather.Model.Weather;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import java.lang.ref.WeakReference;
 
@@ -38,10 +27,6 @@ public class MainPresenter implements MVP.ProvidedPresenterOps,
     public void setView(MVP.RequiredViewOps view) {
     }
 
-    @Override
-    public void onMainactivityClicked() {
-
-    }
 
     @Override
     public void onStart() {
