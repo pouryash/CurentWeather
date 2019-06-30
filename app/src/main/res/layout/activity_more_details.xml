@@ -1,81 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/moreDetail_Root"
-    android:background="@drawable/background_more_day"
-    android:orientation="vertical"
-    tools:context=".MoreDetails">
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/moreDetail_toolbar"
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/moreDetail_Root"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        tools:targetApi="lollipop" />
+        android:layout_height="match_parent"
+        android:background="@drawable/background_more_day"
+        android:orientation="vertical"
+        tools:context=".MoreDetails">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/moreDetail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            tools:targetApi="lollipop" />
 
-        <ImageView
-            android:id="@+id/moreDetail_WeatherIv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            tools:src="@drawable/ic_mosty_sunny" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/moreDetail_TempTv"
-            android:layout_alignParentStart="true"
-            android:textSize="60sp"
-            android:fontFamily="@font/sans_bold"
+            <ImageView
+                android:id="@+id/moreDetail_WeatherIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                tools:src="@drawable/ic_mosty_sunny_more_detail"
+                />
+
+            <TextView
+                android:id="@+id/moreDetail_TempTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/sans_bold"
+                android:textColor="@color/colorWاhite"
+                android:textSize="40sp"
+                tools:text="23° C" />
+
+            <TextView
+                android:id="@+id/moreDitail_Min_MaxTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/moreDetail_TempTv"
+                android:layout_alignStart="@id/moreDetail_TempTv"
+                android:layout_alignEnd="@id/moreDetail_TempTv"
+                android:fontFamily="@font/sans_bold"
+                android:gravity="start"
+                android:textColor="@color/colorTextSecound"
+                android:textSize="20sp"
+                tools:text="22°/15°" />
+
+            <TextView
+                android:id="@+id/moreDetail_CityTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/moreDitail_Min_MaxTv"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/city_background"
+                android:drawableStart="@drawable/ic_location_on"
+                android:drawablePadding="4dp"
+                android:ellipsize="end"
+                android:gravity="end"
+                android:maxWidth="200dp"
+                android:paddingRight="8dp"
+                android:singleLine="true"
+                android:textColor="@color/colorWاhite"
+                android:textSize="20sp"
+                tools:text="Paris" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/moreDetail_HourRv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
             android:layout_marginStart="16dp"
-            android:textColor="@color/colorWاhite"
-            tools:text="23° C"/>
-        <TextView
-            android:id="@+id/moreDitail_Min_MaxTv"
-            android:layout_below="@id/moreDetail_TempTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/moreDetail_TempTv"
-            android:layout_alignStart="@id/moreDetail_TempTv"
-            android:fontFamily="@font/sans_bold"
-            android:textColor="@color/colorTextSecound"
-            android:gravity="start"
-            android:textSize="30sp"
-            tools:text="22°/15°"/>
+            android:layout_marginEnd="16dp"
+            android:background="#fff" />
 
-        <TextView
-            android:id="@+id/moreDetail_CityTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:drawableStart="@drawable/ic_location_on"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/moreDetail_DayRv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
             android:layout_marginStart="16dp"
-            android:paddingRight="8dp"
-            android:drawablePadding="4dp"
-            android:textSize="25sp"
-            android:background="@drawable/city_background"
-            android:textColor="@color/colorWاhite"
-            android:layout_below="@id/moreDitail_Min_MaxTv"
-            android:maxWidth="200dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            tools:text="Paris"/>
-    </RelativeLayout>
+            android:layout_marginEnd="16dp"
+            android:background="#fff" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/moreDetail_HourRv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/moreDetail_DayRv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/normal_margin">
 
-</LinearLayout>
+            <ProgressBar
+                android:id="@+id/circularProgressBar2"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="150dp"
+                android:layout_height="135dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="12"
+                android:progressDrawable="@drawable/more_detail_progress" />
+
+
+            <TextView
+                android:id="@+id/more_detail_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/circularProgressBar2"
+                android:layout_alignRight="@id/circularProgressBar2"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/colorWاhite"
+                tools:text="10" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/sans_bold"
+                android:text="@string/more_detail_status"
+                android:textColor="@color/colorWاhite"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/more_detail_pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/sans_bold"
+                android:textColor="#ccc"
+                android:textSize="15sp"
+                tools:text="pressure : 1000" />
+
+            <TextView
+                android:id="@+id/more_detail_humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/circularProgressBar2"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/sans_bold"
+                android:maxWidth="270dp"
+                android:textColor="#ccc"
+                android:textSize="15sp"
+                tools:text=" humidity : 11%" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+
+</ScrollView>

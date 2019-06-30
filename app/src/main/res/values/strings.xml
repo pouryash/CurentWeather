@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CurentWheather</string>
+    <string name="more_detail_status">Status</string>
 </resources>

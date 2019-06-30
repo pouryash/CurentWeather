@@ -11,7 +11,7 @@ import com.example.ps.curentwheather.Api.ApiService;
 import com.example.ps.curentwheather.Model.Weather;
 import java.util.List;
 
-public class MainModel implements MVP.ProvidedModelOps {
+public class MainModel implements MVP.ProvidedModelOps{
 
 private MVP.RequiredPresenterOps mPresenter;
 
@@ -19,7 +19,6 @@ private MVP.RequiredPresenterOps mPresenter;
     public MainModel(MVP.RequiredPresenterOps presenter) {
         this.mPresenter = presenter;
     }
-
 
     @Override
     public void getCurentWeather(double lat, double lon) {

@@ -1,6 +1,7 @@
 package com.example.ps.curentwheather.Api;
 
 import android.content.Context;
+import android.icu.util.LocaleData;
 import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -8,6 +9,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ps.curentwheather.Model.Weather;
+import com.google.gson.JsonObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +18,9 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -23,6 +28,7 @@ public class ApiService {
 
     private static final String BASE_URL_MAIN = "https://openweathermap.org/data/2.5/weather?";
     private static final String BASE_URL_HOUR = "https://openweathermap.org/data/2.5/forecast/hourly?";
+    private static final String BASE_URL_DAY = "https://openweathermap.org/data/2.5/forecast/daily?";
     private static final String TAG = "APIServise";
     private static final String APPID = "b6907d289e10d714a6e88b30761fae22";
     public Request request;
@@ -59,8 +65,9 @@ public class ApiService {
                         weather.setMinTemprature(mainWeather.getDouble("temp_min"));
                         weather.setWeatherTemprature(mainWeather.getDouble("temp"));
                         weather.setPressure(mainWeather.getInt("pressure"));
-                        weather.setWindDegree(windWeather.getDouble("deg"));
-                        weather.setWindSpeed(windWeather.getDouble("speed"));
+//                        weather.setWindDegree(windWeather.getDouble("deg"));
+//                        weather.setWindSpeed(windWeather.getDouble("speed"));
+                    //<--TODO fix this-->
                         weather.setCountry(sysWeather.getString("country"));
                         weather.setCityName(response.getString("name"));
                         weather.setWeatherDescription(obWeather.getString("description"));
@@ -92,14 +99,15 @@ public class ApiService {
             List<Weather> hourWeatherList = new ArrayList<>();
             @Override
             public void onResponse(JSONObject response) {
-
+                Weather weather = null;
                 JSONArray hourWeathers = null;
+
+
                 try {
                     hourWeathers = response.getJSONArray("list");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Weather weather = null;
                 for (int i = 0; i < hourWeathers.length(); i++) {
                     weather = new Weather();
 
@@ -131,6 +139,79 @@ public class ApiService {
 
     }
 
+    public void getDaysWeather(final onDaysWeatherCallBack<Weather> onResultCallBack){
+
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,
+                BASE_URL_DAY + "lat=" + lat + "&lon=" + lon + "&cnt=10" +"&appid=" + APPID, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Weather weather = null;
+                        JSONArray hourWeathers = null;
+                        List<Weather> daysWeatherList = new ArrayList<>();
+
+
+                        try {
+                            hourWeathers = response.getJSONArray("list");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        for (int i = 0; i < 5; i++) {
+                            weather = new Weather();
+
+                            JSONObject dayWeahter = null;
+                            try {
+                                dayWeahter = hourWeathers.getJSONObject(i);
+                                weather.setMinTemprature(dayWeahter.getJSONObject("temp").getDouble("min"));
+                                weather.setMaxTemprature(dayWeahter.getJSONObject("temp").getDouble("max"));
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+
+                                if (i != 0) {
+                                        Calendar calendar = new GregorianCalendar();
+                                        calendar.add(Calendar.DATE, i+1);
+                                        String day = sdf.format(calendar.getTime());
+                                        weather.setDay(day);
+
+                                }else{
+                                    weather.setDay("Tomorrow");
+                                }
+
+
+
+                                daysWeatherList.add(weather);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        onResultCallBack.OnDaysWeatherRecived(daysWeatherList);
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onResultCallBack.OnDaysWeatherError(error);
+            }
+        });
+        request = Volley.newRequestQueue(context).add(jsonObjectRequest);
+
+    }
+
+    String getCurrentMonth(){
+
+        String monthArray[] = {"Jan","Feb","Mar", "Apr","May","Jun", "Jul",
+                "Aug","Oct","Sep","Nov","Dec"};
+
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+
+        return monthArray[month+1];
+
+    }
+
 
     public interface OnResultCallBack<T>{
         void OnWeatherRecived(T t);
@@ -140,6 +221,11 @@ public class ApiService {
     public interface onHourWeatherCallBack<T>{
         void OnHourWeatherRecived(List<T> response);
         void OnHourWeatherError(VolleyError error);
+    }
+
+    public interface onDaysWeatherCallBack<T>{
+        void OnDaysWeatherRecived(List<T> response);
+        void OnDaysWeatherError(VolleyError error);
     }
 
 }

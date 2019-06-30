@@ -18,6 +18,15 @@ public class Weather {
     private String cityName;
     private String country;
     private Date time;
+    private String day;
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
 
     public Date getTime() {
         return time;

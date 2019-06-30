@@ -1,9 +1,21 @@
 package com.example.ps.curentwheather.MVP_Main;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.example.ps.curentwheather.AndroidService;
+import com.example.ps.curentwheather.Api.ApiService;
+import com.example.ps.curentwheather.MainActivity;
 import com.example.ps.curentwheather.Model.Weather;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.lang.ref.WeakReference;
 
@@ -30,22 +42,25 @@ public class MainPresenter implements MVP.ProvidedPresenterOps,
 
     @Override
     public void onStart() {
-
     }
-
     @Override
     public void onStop() {
 
     }
 
     @Override
-    public void PermissionsGranted(int requestCode) {
+    public void onCreate() {
 
     }
 
     @Override
     public void onGetLocation(double lat, double lon) {
         mModel.getCurentWeather(lat,lon);
+    }
+
+    @Override
+    public void PermissionsGranted(int requestCode) {
+
     }
 
 

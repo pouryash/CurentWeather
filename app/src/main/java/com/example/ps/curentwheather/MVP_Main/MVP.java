@@ -1,5 +1,6 @@
 package com.example.ps.curentwheather.MVP_Main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -13,7 +14,7 @@ public interface MVP {
 interface RequiredViewOps{
 
     Context getAppContext1();
-    Context getActivityContext1();
+    Activity getActivityContext1();
     void showToast(Toast toast);
     void onWeatherResived(Weather weather);
 
@@ -24,9 +25,9 @@ interface ProvidedPresenterOps {
     void setView(RequiredViewOps view);
     void onStart();
     void onStop();
-    void PermissionsGranted(int requestCode);
+    void onCreate();
     void onGetLocation(double lat,double lon);
-
+    void PermissionsGranted(int requestCode);
 }
 
     interface RequiredPresenterOps {

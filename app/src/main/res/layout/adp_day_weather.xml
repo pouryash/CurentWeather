@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
     android:gravity="center_vertical"
     android:layout_height="wrap_content">
 
@@ -12,8 +14,8 @@
         android:layout_centerVertical="true"
         android:fontFamily="@font/sans_light"
         tools:text="Tomorrow"
-        android:textColor="@color/colorBlack"
-        android:textSize="20sp"
+        android:textColor="@color/colorWاhite"
+        android:textSize="15sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -22,19 +24,19 @@
         android:id="@+id/adpday_tempIv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toStartOf="@id/adpday_WeatherTv"
-        tools:src="@drawable/ic_mosty_sunny_48"/>
+        tools:src="@drawable/ic_mosty_sunny_more_detail_24"/>
     <TextView
         android:layout_marginStart="16dp"
         android:id="@+id/adpday_WeatherTv"
         android:fontFamily="@font/sans_bold"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
+        android:textColor="@color/colorWاhite"
         tools:text="18°/17°"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
-
 
 </RelativeLayout>

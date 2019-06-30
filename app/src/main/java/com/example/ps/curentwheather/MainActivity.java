@@ -1,6 +1,7 @@
 package com.example.ps.curentwheather;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -51,9 +52,9 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     private LinearLayout mainRoot;
     private Weather weather;
     Date currentTime;
-    double lat, lon;
     LocationManager mLocationManager;
     private ProgressDialog progress;
+    double lat, lon;
     private FusedLocationProviderClient clint;
 
 
@@ -72,8 +73,10 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
 
         initViews();
-        AndroidService service = new AndroidService();
-        service.statusCheck(this);
+        AndroidService.getInstance().statusCheck(MainActivity.this);
+        getLocation();
+        mPresenter.onCreate();
+
 
 
 
@@ -111,6 +114,13 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
     void getLocation(){
         LocationManager manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
@@ -130,12 +140,6 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
         }
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
 
     private void initViews() {
 
@@ -160,7 +164,10 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
         mainRoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,MoreDetails.class));
+                Intent intent = new Intent(MainActivity.this,MoreDetails.class);
+                intent.putExtra("lat",lat);
+                intent.putExtra("lon",lon);
+                startActivity(intent);
             }
         });
         mainDegree.setText(Math.round(weather.getWeatherTemprature()) + "° C");
@@ -198,7 +205,6 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     protected void onStart() {
         super.onStart();
         mPresenter.onStart();
-        getLocation();
     }
 
     @Override
@@ -224,7 +230,7 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     }
 
     @Override
-    public Context getActivityContext1() {
+    public Activity getActivityContext1() {
         return MainActivity.this;
     }
 
