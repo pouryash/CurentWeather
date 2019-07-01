@@ -1,5 +1,7 @@
 package com.example.ps.curentwheather;
 
+import android.os.Handler;
+
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -15,6 +17,7 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
+
     }
 
 }

@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.ps.curentwheather.Api.ApiService;
 import com.example.ps.curentwheather.MVP_Main.MVP;
 import com.example.ps.curentwheather.MVP_Main.MainPresenter;
@@ -177,14 +179,18 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
         Date date = new Date();
         if (date.getHours() > 19 || date.getHours() < 7) {
             mainRoot.setBackgroundResource(R.drawable.background_night);
-            mainSun.setImageResource(R.drawable.ic_moon);
+            Glide.with(this).load(R.drawable.ic_night_moon)
+                    .apply(new RequestOptions().override(512,512))
+                    .into(mainSun);
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
         } else if (date.getHours() < 16) {
             mainRoot.setBackgroundResource(R.drawable.background_day);
-            mainSun.setImageResource(R.drawable.ic_sun);
+            Glide.with(this).load(R.drawable.ic_sunny)
+                    .apply(new RequestOptions().override(512,512))
+                    .into(mainSun);
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

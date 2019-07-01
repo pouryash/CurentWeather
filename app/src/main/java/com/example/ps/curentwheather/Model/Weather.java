@@ -19,6 +19,17 @@ public class Weather {
     private String country;
     private Date time;
     private String day;
+    private String icon;
+
+    public String getIcon() {
+
+        return this.icon;
+
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
     public String getDay() {
         return day;

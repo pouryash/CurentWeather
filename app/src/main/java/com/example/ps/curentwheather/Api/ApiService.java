@@ -71,6 +71,7 @@ public class ApiService {
                         weather.setCountry(sysWeather.getString("country"));
                         weather.setCityName(response.getString("name"));
                         weather.setWeatherDescription(obWeather.getString("description"));
+                        weather.setIcon(obWeather.getString("icon"));
                         weather.setWeatherName(obWeather.getString("main"));
 
                 } catch (JSONException e) {
@@ -115,6 +116,7 @@ public class ApiService {
                     try {
                         hourWeahter = hourWeathers.getJSONObject(i);
                         weather.setWeatherTemprature(hourWeahter.getJSONObject("main").getDouble("temp"));
+                        weather.setIcon(hourWeahter.getJSONArray("weather").getJSONObject(0).getString("icon"));
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             Date date = format.parse(hourWeahter.getString("dt_txt"));
                             System.out.println(date);
@@ -164,7 +166,7 @@ public class ApiService {
                                 dayWeahter = hourWeathers.getJSONObject(i);
                                 weather.setMinTemprature(dayWeahter.getJSONObject("temp").getDouble("min"));
                                 weather.setMaxTemprature(dayWeahter.getJSONObject("temp").getDouble("max"));
-
+                                weather.setIcon(dayWeahter.getJSONArray("weather").getJSONObject(0).getString("icon"));
                                 SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
 
                                 if (i != 0) {

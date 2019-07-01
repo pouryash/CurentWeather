@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.ps.curentwheather.Commen;
 import com.example.ps.curentwheather.Model.Weather;
 import com.example.ps.curentwheather.R;
 import java.util.Date;
@@ -57,7 +60,8 @@ public class HourWeatherAdp extends RecyclerView.Adapter<HourWeatherAdp.HourVh> 
 
     void bindWeather(Weather weather){
 
-        tempIv.setImageResource(R.drawable.ic_mosty_sunny_more_detail_24);
+        Glide.with(context).load(Commen.getIconDay(weather.getIcon()))
+                .apply(new RequestOptions().override(72,72)).into(tempIv);
         Date date = weather.getTime();
 
         timeTv.setText(date.getHours()+":00");

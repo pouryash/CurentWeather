@@ -2,6 +2,7 @@ package com.example.ps.curentwheather;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,10 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.ps.curentwheather.Adapter.DaysWeatherAdp;
 import com.example.ps.curentwheather.Adapter.HourWeatherAdp;
 import com.example.ps.curentwheather.MVP_MoreDeatils.MVP;
@@ -21,11 +25,13 @@ import com.example.ps.curentwheather.Model.Weather;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOps {
+public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOps,
+        SwipeRefreshLayout.OnRefreshListener {
 
 
     ImageView weatherIv;
@@ -36,6 +42,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     TextView pressureTv;
     TextView progressHumidityTv;
     ProgressBar humidityProgressBar;
+    LinearLayout root;
     Toolbar toolbar;
     RecyclerView hourRv;
     RecyclerView daysRv;
@@ -43,6 +50,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     DaysWeatherAdp daysWeatherAdp;
     List<Weather> weatherList = new ArrayList<>();
     List<Weather> daysweatherList = new ArrayList<>();
+    SwipeRefreshLayout swipeRefreshLayout;
     Weather weather;
     double lat, lon;
     private FusedLocationProviderClient clint;
@@ -67,8 +75,11 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     }
 
     private void initView() {
+
+        root = findViewById(R.id.moreDetail_Root);
+        swipeRefreshLayout = findViewById(R.id.more_detail_swipTORefresh);
         humidityProgressBar = findViewById(R.id.circularProgressBar2);
-        progressHumidityTv =findViewById(R.id.more_detail_progress);
+        progressHumidityTv = findViewById(R.id.more_detail_progress);
         humidityTv = findViewById(R.id.more_detail_humidity);
         pressureTv = findViewById(R.id.more_detail_pressure);
         toolbar = (Toolbar) findViewById(R.id.moreDetail_toolbar);
@@ -78,9 +89,9 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
         cityTv = findViewById(R.id.moreDetail_CityTv);
         min_MaxTv = findViewById(R.id.moreDitail_Min_MaxTv);
         tempTv = findViewById(R.id.moreDetail_TempTv);
-        lat = getIntent().getDoubleExtra("lat",0);
-        lon = getIntent().getDoubleExtra("lon",0);
-        mPresenter.onGetLocation(lat,lon);
+        lat = getIntent().getDoubleExtra("lat", 0);
+        lon = getIntent().getDoubleExtra("lon", 0);
+        mPresenter.onGetLocation(lat, lon);
 
 
     }
@@ -107,6 +118,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
     private void setupView() {
 //        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        swipeRefreshLayout.setOnRefreshListener(this);
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         toolbar.setSubtitle("");
@@ -116,17 +128,30 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 //        toolbar.setSubtitle("Test Subtitle");
 
         toolbar.inflateMenu(R.menu.menu);
-        tempTv.setText(Math.round(weather.getWeatherTemprature())+"° C");
-        min_MaxTv.setText(Math.round(weather.getMaxTemprature())+"°/"+Math.round(weather.getMinTemprature())+"°");
+        tempTv.setText(Math.round(weather.getWeatherTemprature()) + "° C");
+        min_MaxTv.setText(Math.round(weather.getMaxTemprature()) + "°/"
+                + Math.round(weather.getMinTemprature()) + "°");
         cityTv.setText(weather.getCityName());
-        weatherIv.setImageResource(R.drawable.ic_mosty_sunny_more_detail);
+
+        Date date = Commen.getDate();
+        if (date.getHours() > 19 || date.getHours() < 7){
+
+            root.setBackgroundResource(R.drawable.background_more_night);
+            int image =Commen.getIconNight(weather.getIcon());
+            Glide.with(getAppContext1()).load(image).
+                    apply(new RequestOptions().override(450,450)).into(weatherIv);
+
+        }else if (date.getHours() < 17 || date.getHours() < 20){
+
+            root.setBackgroundResource(R.drawable.background_more_day);
+            int image =Commen.getIconDay(weather.getIcon());
+            Glide.with(getAppContext1()).load(image).
+                    apply(new RequestOptions().override(450,450)).into(weatherIv);
+        }
         humidityProgressBar.setProgress(weather.getHimidity());
-        progressHumidityTv.setText(weather.getHimidity()+"%");
-        pressureTv.setText("Pressure : "+weather.getPressure()+" hpa");
-        humidityTv.setText("Humidity : "+weather.getHimidity()+"%");
-        //<--TODO: fix imageview -->
-
-
+        progressHumidityTv.setText(weather.getHimidity() + "%");
+        pressureTv.setText("Pressure : " + weather.getPressure() + " hpa");
+        humidityTv.setText("Humidity : " + weather.getHimidity() + "%");
 
     }
 
@@ -172,5 +197,14 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
         daysRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         daysWeatherAdp = new DaysWeatherAdp(daysweatherList, this);
         daysRv.setAdapter(daysWeatherAdp);
+
+
+    }
+
+    @Override
+    public void onRefresh() {
+        mPresenter.onGetLocation(lat, lon);
+        swipeRefreshLayout.setRefreshing(false);
+        Toast.makeText(MoreDetails.this, "Data Is Now updated", Toast.LENGTH_SHORT).show();
     }
 }
