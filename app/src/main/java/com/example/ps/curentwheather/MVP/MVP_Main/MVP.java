@@ -1,10 +1,12 @@
-package com.example.ps.curentwheather.MVP_Main;
+package com.example.ps.curentwheather.MVP.MVP_Main;
 
 import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
 import com.example.ps.curentwheather.Model.Weather;
+
+import java.util.List;
 
 
 public interface MVP {
@@ -28,6 +30,7 @@ interface ProvidedPresenterOps {
     void onCreate();
     void onGetLocation(double lat,double lon);
     void PermissionsGranted(int requestCode);
+    void onInternetNotAvailable();
 }
 
     interface RequiredPresenterOps {
@@ -39,7 +42,9 @@ interface ProvidedPresenterOps {
     }
 
     interface ProvidedModelOps {
-        void getCurentWeather(double lat,double lon);
+        void insertWeather(double lat, double lon);
+        List<Weather> selectWeathers();
+        int updateWeather(Weather weather);
     }
 
 }

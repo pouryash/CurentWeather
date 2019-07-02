@@ -1,23 +1,12 @@
-package com.example.ps.curentwheather.MVP_Main;
+package com.example.ps.curentwheather.MVP.MVP_Main;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
-import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
-import com.example.ps.curentwheather.AndroidService;
-import com.example.ps.curentwheather.Api.ApiService;
-import com.example.ps.curentwheather.MainActivity;
 import com.example.ps.curentwheather.Model.Weather;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class MainPresenter implements MVP.ProvidedPresenterOps,
         MVP.RequiredPresenterOps{
@@ -32,7 +21,7 @@ public class MainPresenter implements MVP.ProvidedPresenterOps,
 
         mView =new WeakReference<>(view);
         this.con = contex;
-        mModel = new MainModel(this);
+        mModel = new MainModel(this,contex);
     }
 
     @Override
@@ -55,12 +44,18 @@ public class MainPresenter implements MVP.ProvidedPresenterOps,
 
     @Override
     public void onGetLocation(double lat, double lon) {
-        mModel.getCurentWeather(lat,lon);
+        mModel.insertWeather(lat,lon);
     }
 
     @Override
     public void PermissionsGranted(int requestCode) {
 
+    }
+
+    @Override
+    public void onInternetNotAvailable() {
+        List<Weather> list = mModel.selectWeathers();
+        onResive(mModel.selectWeathers().get(0));
     }
 
 

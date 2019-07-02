@@ -19,8 +19,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ps.curentwheather.Adapter.DaysWeatherAdp;
 import com.example.ps.curentwheather.Adapter.HourWeatherAdp;
-import com.example.ps.curentwheather.MVP_MoreDeatils.MVP;
-import com.example.ps.curentwheather.MVP_MoreDeatils.MoreDeatailPresenter;
+import com.example.ps.curentwheather.MVP.MVP_MoreDeatils.MVP;
+import com.example.ps.curentwheather.MVP.MVP_MoreDeatils.MoreDeatailPresenter;
 import com.example.ps.curentwheather.Model.Weather;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
@@ -56,7 +56,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     private FusedLocationProviderClient clint;
 
     @Inject
-    MVP.PrvidedPresenterOps mPresenter = new MoreDeatailPresenter(this);
+    MVP.PrvidedPresenterOps mPresenter = new MoreDeatailPresenter(this, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,13 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
 
         initView();
+        if (Commen.isNetworkConnectes(this)) {
+
+            mPresenter.onGetLocation(lat, lon);
+
+        } else {
+            mPresenter.onInternetNotAvailable();
+        }
 
     }
 
@@ -91,8 +98,6 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
         tempTv = findViewById(R.id.moreDetail_TempTv);
         lat = getIntent().getDoubleExtra("lat", 0);
         lon = getIntent().getDoubleExtra("lon", 0);
-        mPresenter.onGetLocation(lat, lon);
-
 
     }
 
@@ -133,25 +138,25 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
                 + Math.round(weather.getMinTemprature()) + "°");
         cityTv.setText(weather.getCityName());
 
-        Date date = Commen.getDate();
-        if (date.getHours() > 19 || date.getHours() < 7){
+        Date date = new Date();
+        if (date.getHours() > 19 || date.getHours() < 7) {
 
             root.setBackgroundResource(R.drawable.background_more_night);
-            int image =Commen.getIconNight(weather.getIcon());
+            int image = Commen.getIconNight(weather.getIcon());
             Glide.with(getAppContext1()).load(image).
-                    apply(new RequestOptions().override(450,450)).into(weatherIv);
+                    apply(new RequestOptions().override(450, 450)).into(weatherIv);
 
-        }else if (date.getHours() < 17 || date.getHours() < 20){
+        } else if (date.getHours() < 17 || date.getHours() < 20) {
 
             root.setBackgroundResource(R.drawable.background_more_day);
-            int image =Commen.getIconDay(weather.getIcon());
+            int image = Commen.getIconDay(weather.getIcon());
             Glide.with(getAppContext1()).load(image).
-                    apply(new RequestOptions().override(450,450)).into(weatherIv);
+                    apply(new RequestOptions().override(450, 450)).into(weatherIv);
         }
-        humidityProgressBar.setProgress(weather.getHimidity());
-        progressHumidityTv.setText(weather.getHimidity() + "%");
+        humidityProgressBar.setProgress(weather.getHumidity());
+        progressHumidityTv.setText(weather.getHumidity() + "%");
         pressureTv.setText("Pressure : " + weather.getPressure() + " hpa");
-        humidityTv.setText("Humidity : " + weather.getHimidity() + "%");
+        humidityTv.setText("Humidity : " + weather.getHumidity() + "%");
 
     }
 
@@ -203,8 +208,13 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
     @Override
     public void onRefresh() {
-        mPresenter.onGetLocation(lat, lon);
-        swipeRefreshLayout.setRefreshing(false);
-        Toast.makeText(MoreDetails.this, "Data Is Now updated", Toast.LENGTH_SHORT).show();
+        if (Commen.isNetworkConnectes(this)) {
+            mPresenter.onGetLocation(lat, lon);
+            swipeRefreshLayout.setRefreshing(false);
+            Toast.makeText(MoreDetails.this, "Data Is Now updated", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(MoreDetails.this, "Please Cheack Your Internet Connection!", Toast.LENGTH_SHORT).show();
+
+        }
     }
 }

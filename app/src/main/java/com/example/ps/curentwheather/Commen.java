@@ -1,6 +1,11 @@
 package com.example.ps.curentwheather;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Commen {
@@ -98,12 +103,42 @@ public class Commen {
     }
 
 
-    public static Date getDate(){
+    public static String getDate(){
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss a");
         String currentDateandTime = sdf.format(new Date());
-        Date date = new Date();
 
-        return date;
+
+        return currentDateandTime;
+    }
+//
+//    public static Date parseDate(String ss){
+//        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss a");
+//        Date date = null;
+//        try {
+//            date = format.parse(ss);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return date;
+//    }
+
+    public static Boolean isNetworkConnectes(Context context){
+
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            return cm.getActiveNetworkInfo() != null;
+    }
+
+    String getCurrentMonth() {
+
+        String monthArray[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
+                "Aug", "Oct", "Sep", "Nov", "Dec"};
+
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+
+        return monthArray[month + 1];
+
     }
 }

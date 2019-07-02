@@ -1,25 +1,32 @@
 package com.example.ps.curentwheather.Model;
 
-import com.example.ps.curentwheather.R;
-
 import java.util.Date;
 
 public class Weather {
 
+    private int id;
     private String weatherName;
     private String weatherDescription;
     private double windSpeed;
     private double windDegree;
-    private int himidity;
+    private int humidity;
     private double weatherTemprature;
     private double minTemprature;
     private double maxTemprature;
     private int pressure;
     private String cityName;
     private String country;
-    private Date time;
+    private String time;
     private String day;
     private String icon;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getIcon() {
 
@@ -39,11 +46,11 @@ public class Weather {
         this.day = day;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -53,6 +60,10 @@ public class Weather {
         }else {
             return country;
         }
+    }
+
+    public String getCountry() {
+        return country;
     }
 
     public void setCountry(String country) {
@@ -91,12 +102,12 @@ public class Weather {
         this.windDegree = windDegree;
     }
 
-    public int getHimidity() {
-        return himidity;
+    public int getHumidity() {
+        return humidity;
     }
 
-    public void setHimidity(int himidity) {
-        this.himidity = himidity;
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
     }
 
     public double getWeatherTemprature() {

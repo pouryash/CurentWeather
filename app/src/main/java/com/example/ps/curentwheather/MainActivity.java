@@ -10,8 +10,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,21 +18,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.example.ps.curentwheather.Api.ApiService;
-import com.example.ps.curentwheather.MVP_Main.MVP;
-import com.example.ps.curentwheather.MVP_Main.MainPresenter;
+import com.example.ps.curentwheather.MVP.MVP_Main.MVP;
+import com.example.ps.curentwheather.MVP.MVP_Main.MainPresenter;
 import com.example.ps.curentwheather.Model.Weather;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -76,7 +66,12 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
         initViews();
         AndroidService.getInstance().statusCheck(MainActivity.this);
-        getLocation();
+        if (Commen.isNetworkConnectes(this)){
+            getLocation();
+        }else {
+            Toast.makeText(this,"You're Not Connected To Internet!",Toast.LENGTH_LONG).show();
+            mPresenter.onInternetNotAvailable();
+        }
         mPresenter.onCreate();
 
 
@@ -174,23 +169,19 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
         });
         mainDegree.setText(Math.round(weather.getWeatherTemprature()) + "° C");
         mainLocation.setText(weather.getCityName() + " , " + weather.getCountry(weather));
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss a");
-        String currentDateandTime = sdf.format(new Date());
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss a");
+//        String currentDateandTime = sdf.format(new Date());
         Date date = new Date();
         if (date.getHours() > 19 || date.getHours() < 7) {
             mainRoot.setBackgroundResource(R.drawable.background_night);
-            Glide.with(this).load(R.drawable.ic_night_moon)
-                    .apply(new RequestOptions().override(512,512))
-                    .into(mainSun);
+            mainSun.setImageResource(R.drawable.ic_moon);
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
         } else if (date.getHours() < 16) {
             mainRoot.setBackgroundResource(R.drawable.background_day);
-            Glide.with(this).load(R.drawable.ic_sunny)
-                    .apply(new RequestOptions().override(512,512))
-                    .into(mainSun);
+            mainSun.setImageResource(R.drawable.ic_sun);
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -204,7 +195,8 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorStatusBarAfternon));
         }
-        mainTime.setText(currentDateandTime);
+
+        mainTime.setText(weather.getTime()+"");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.ps.curentwheather.MVP_MoreDeatils;
+package com.example.ps.curentwheather.MVP.MVP_MoreDeatils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +24,7 @@ public interface MVP {
 
         void onStart();
         void onGetLocation(double lat,double lon);
+        void onInternetNotAvailable();
     }
 
     interface RequiredPresenterOps{
@@ -38,9 +39,12 @@ public interface MVP {
 
     }
 
-    interface PrvidedModelHourOps{
+    interface PrvidedModelMoreDetailOps {
         void getHourWeather(double lat,double lon);
         void getWeather(double lat,double lon);
         void getDaysWeather(double lat,double lon);
+        void insertWeather(double lat, double lon);
+        List<Weather> selectWeathers();
+        int updateWeather(Weather weather);
     }
 }

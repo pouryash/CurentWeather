@@ -1,9 +1,8 @@
-package com.example.ps.curentwheather.MVP_MoreDeatils;
+package com.example.ps.curentwheather.MVP.MVP_MoreDeatils;
 
 import android.content.Context;
 import android.widget.Toast;
-import com.example.ps.curentwheather.AndroidService;
-import com.example.ps.curentwheather.MVP_Main.MainModel;
+
 import com.example.ps.curentwheather.Model.Weather;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -12,11 +11,13 @@ public class MoreDeatailPresenter implements MVP.PrvidedPresenterOps,
 MVP.RequiredPresenterOps{
 
     WeakReference<MVP.RequiredViewOps> mView;
-    MVP.PrvidedModelHourOps mModelHour;
+    MVP.PrvidedModelMoreDetailOps mModelMoreDetail;
+    Context con;
 
-    public MoreDeatailPresenter(MVP.RequiredViewOps view) {
+    public MoreDeatailPresenter(MVP.RequiredViewOps view,Context context) {
         mView =new WeakReference<>(view);
-        mModelHour = new MoreDetailModel(this);
+        con = context;
+        mModelMoreDetail = new MoreDetailModel(this,context);
     }
 
     @Override
@@ -25,10 +26,16 @@ MVP.RequiredPresenterOps{
 
     @Override
     public void onGetLocation(double lat, double lon) {
-        mModelHour.getHourWeather(lat,lon);
-        mModelHour.getWeather(lat,lon);
-        mModelHour.getDaysWeather(lat,lon);
+        mModelMoreDetail.getHourWeather(lat,lon);
+        mModelMoreDetail.getWeather(lat,lon);
+        mModelMoreDetail.getDaysWeather(lat,lon);
         //<--TODO -->
+    }
+
+    @Override
+    public void onInternetNotAvailable() {
+        List<Weather> list = mModelMoreDetail.selectWeathers();
+        onResiveWeather(mModelMoreDetail.selectWeathers().get(0));
     }
 
 
