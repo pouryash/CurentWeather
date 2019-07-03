@@ -16,7 +16,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 public class AndroidService {
 
+    public static final int LOCATION_SETTINGS_REQUEST = 1;
     private static AndroidService instance;
+
 
     private AndroidService(){
 
@@ -34,6 +36,7 @@ public class AndroidService {
         final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             buildAlertMessageNoGps(context);
+
         }
     }
 
@@ -43,7 +46,8 @@ public class AndroidService {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
-                        context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        context.startActivityForResult(intent,LOCATION_SETTINGS_REQUEST);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

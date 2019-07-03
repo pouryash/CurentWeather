@@ -25,7 +25,7 @@ import java.util.List;
 
 
 public class ApiService {
-
+//<--TODO: check why icons wrong => check description-->
     private static final String BASE_URL_MAIN = "https://openweathermap.org/data/2.5/weather?";
     private static final String BASE_URL_HOUR = "https://openweathermap.org/data/2.5/forecast/hourly?";
     private static final String BASE_URL_DAY = "https://openweathermap.org/data/2.5/forecast/daily?";
@@ -104,10 +104,12 @@ public class ApiService {
             public void onResponse(JSONObject response) {
                 Weather weather = null;
                 JSONArray hourWeathers = null;
+                JSONObject dd = null;
 
 
                 try {
                     hourWeathers = response.getJSONArray("list");
+                    dd = response.getJSONObject("city");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -119,7 +121,9 @@ public class ApiService {
                         hourWeahter = hourWeathers.getJSONObject(i);
                         weather.setWeatherTemprature(hourWeahter.getJSONObject("main").getDouble("temp"));
                         weather.setIcon(hourWeahter.getJSONArray("weather").getJSONObject(0).getString("icon"));
-
+                        weather.setWeatherName(hourWeahter.getJSONArray("weather").getJSONObject(0).getString("main"));
+                        weather.setWeatherDescription(hourWeahter.getJSONArray("weather").getJSONObject(0).getString("description"));
+weather.setCityName(dd.getString("name"));
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date date = format.parse(hourWeahter.getString("dt_txt"));
                         weather.setTime(date.getHours()+"");

@@ -26,9 +26,9 @@ MVP.RequiredPresenterOps{
 
     @Override
     public void onGetLocation(double lat, double lon) {
-        mModelMoreDetail.getHourWeather(lat,lon);
-        mModelMoreDetail.getWeather(lat,lon);
-        mModelMoreDetail.getDaysWeather(lat,lon);
+        mModelMoreDetail.insertHoursWeather(lat,lon);
+        mModelMoreDetail.insertWeather(lat,lon);
+        mModelMoreDetail.insertDaysWeather(lat,lon);
         //<--TODO -->
     }
 
@@ -36,6 +36,8 @@ MVP.RequiredPresenterOps{
     public void onInternetNotAvailable() {
         List<Weather> list = mModelMoreDetail.selectWeathers();
         onResiveWeather(mModelMoreDetail.selectWeathers().get(0));
+        onResiveHourWeather(mModelMoreDetail.selectHoursWeathers());
+        onResiveDaysWeather(mModelMoreDetail.selectDaysdWeathers());
     }
 
 

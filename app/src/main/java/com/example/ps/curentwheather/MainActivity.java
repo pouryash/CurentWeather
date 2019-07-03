@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -53,6 +54,8 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     @Inject
     MVP.ProvidedPresenterOps mPresenter = new MainPresenter(this, this);
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,9 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
         initViews();
         AndroidService.getInstance().statusCheck(MainActivity.this);
         if (Commen.isNetworkConnectes(this)){
+
             getLocation();
+
         }else {
             Toast.makeText(this,"You're Not Connected To Internet!",Toast.LENGTH_LONG).show();
             mPresenter.onInternetNotAvailable();
@@ -111,6 +116,15 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 1){
+
+            getLocation();
+
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -213,6 +227,7 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
     @Override
     public void onPermissionsGranted(int requestCode) {
+        getLocation();
         mPresenter.PermissionsGranted(requestCode);
     }
 

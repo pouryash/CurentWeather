@@ -40,11 +40,14 @@ public interface MVP {
     }
 
     interface PrvidedModelMoreDetailOps {
-        void getHourWeather(double lat,double lon);
-        void getWeather(double lat,double lon);
-        void getDaysWeather(double lat,double lon);
         void insertWeather(double lat, double lon);
         List<Weather> selectWeathers();
         int updateWeather(Weather weather);
+        void insertHoursWeather(double lat, double lon);
+        List<Weather> selectHoursWeathers();
+        int updateHoursWeather(List<Weather> weathers);
+        void insertDaysWeather(double lat, double lon);
+        List<Weather> selectDaysdWeathers();
+        int updateDaysWeather(List<Weather> weathers);
     }
 }

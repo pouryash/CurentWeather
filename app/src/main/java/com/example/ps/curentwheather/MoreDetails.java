@@ -1,6 +1,7 @@
 package com.example.ps.curentwheather;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -51,9 +52,10 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     List<Weather> weatherList = new ArrayList<>();
     List<Weather> daysweatherList = new ArrayList<>();
     SwipeRefreshLayout swipeRefreshLayout;
+    ProgressDialog progress;
+    FusedLocationProviderClient clint;
     Weather weather;
     double lat, lon;
-    private FusedLocationProviderClient clint;
 
     @Inject
     MVP.PrvidedPresenterOps mPresenter = new MoreDeatailPresenter(this, this);
@@ -83,6 +85,12 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
     private void initView() {
 
+        progress = new ProgressDialog(this);
+        progress.setMessage("Updating...");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
         root = findViewById(R.id.moreDetail_Root);
         swipeRefreshLayout = findViewById(R.id.more_detail_swipTORefresh);
         humidityProgressBar = findViewById(R.id.circularProgressBar2);
@@ -202,6 +210,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
         daysRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         daysWeatherAdp = new DaysWeatherAdp(daysweatherList, this);
         daysRv.setAdapter(daysWeatherAdp);
+        progress.dismiss();
 
 
     }
@@ -214,7 +223,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
             Toast.makeText(MoreDetails.this, "Data Is Now updated", Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(MoreDetails.this, "Please Cheack Your Internet Connection!", Toast.LENGTH_SHORT).show();
-
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 }
