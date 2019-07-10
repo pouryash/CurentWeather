@@ -63,7 +63,7 @@ public class Commen {
         switch (icon){
             case "01n":
             case "01d":
-                image= R.drawable.ic_night_moon;
+                image= R.drawable.ic_moon;
                 break;
             case "03n":
             case "03d":

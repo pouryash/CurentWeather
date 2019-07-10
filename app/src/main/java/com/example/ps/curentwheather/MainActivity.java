@@ -6,14 +6,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,14 +33,15 @@ import com.example.ps.curentwheather.Model.Weather;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
 
-public class MainActivity extends RuntimePermissionsActivity implements MVP.RequiredViewOps {
+public class MainActivity extends RuntimePermissionsActivity implements MVP.RequiredViewOps,
+        LocationListener {
 
     private static final int ACCESS_COARSE_LOCATION = 10;
     private ImageView mainSun;
@@ -48,18 +54,27 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     LocationManager mLocationManager;
     private ProgressDialog progress;
     double lat, lon;
-    private FusedLocationProviderClient clint;
+    //    private FusedLocationProviderClient clint;
+    FirebaseAnalytics firebaseAnalytics;
+
+
+    Intent intentThatCalled;
+    public LocationManager locationManager;
+    public Criteria criteria;
+    public String bestProvider;
 
 
     @Inject
     MVP.ProvidedPresenterOps mPresenter = new MainPresenter(this, this);
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 
         MainActivity.super.requestAppPermissions
                 (new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -68,18 +83,16 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
 
         initViews();
-        AndroidService.getInstance().statusCheck(MainActivity.this);
-        if (Commen.isNetworkConnectes(this)){
-
+        if (Commen.isNetworkConnectes(this)) {
+            AndroidService.getInstance().statusCheck(MainActivity.this);
+            intentThatCalled = getIntent();
             getLocation();
 
-        }else {
-            Toast.makeText(this,"You're Not Connected To Internet!",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "You're Not Connected To Internet!", Toast.LENGTH_LONG).show();
             mPresenter.onInternetNotAvailable();
         }
         mPresenter.onCreate();
-
-
 
 
 //        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -119,7 +132,9 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1){
+        super.onActivityResult(requestCode, resultCode, data);
+        AndroidService.getInstance().statusCheck(this);
+        if (requestCode == 1) {
 
             getLocation();
 
@@ -132,24 +147,56 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
     }
 
-    void getLocation(){
-        LocationManager manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            clint = LocationServices.getFusedLocationProviderClient(this);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            clint.getLastLocation().addOnSuccessListener(MainActivity.this,
-                    new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            lat = location.getLatitude();
-                            lon = location.getLongitude();
-                            mPresenter.onGetLocation(lat, lon);
-                        }
-                    });
+
+    protected void getLocation() {
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        criteria = new Criteria();
+        bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+
+        //You can still do this if you like, you might get lucky:
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(bestProvider);
+            if (location != null) {
+                Log.e("TAG", "GPS is on");
+                lat = location.getLatitude();
+                lon = location.getLongitude();
+                mPresenter.onGetLocation(lat, lon);
         }
+
+
+//                Toast.makeText(MainActivity.this, "latitude:" + lat + " longitude:" + lon, Toast.LENGTH_SHORT).show();
+
+        } else {
+            //This is what you need:
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
+            }
+        }
+
     }
+
+
+//    void getLocation(){
+//        LocationManager manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+//            clint = LocationServices.getFusedLocationProviderClient(this);
+//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                return;
+//            }
+//            clint.getLastLocation().addOnSuccessListener(MainActivity.this,
+//                    new OnSuccessListener<Location>() {
+//                        @Override
+//                        public void onSuccess(Location location) {
+//                            lat = location.getLatitude();
+//                            lon = location.getLongitude();
+//                            mPresenter.onGetLocation(lat, lon);
+//                        }
+//                    });
+//        }
+//    }
 
 
     private void initViews() {
@@ -175,9 +222,9 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
         mainRoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,MoreDetails.class);
-                intent.putExtra("lat",lat);
-                intent.putExtra("lon",lon);
+                Intent intent = new Intent(MainActivity.this, MoreDetails.class);
+                intent.putExtra("lat", lat);
+                intent.putExtra("lon", lon);
                 startActivity(intent);
             }
         });
@@ -210,8 +257,9 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorStatusBarAfternon));
         }
 
-        mainTime.setText(weather.getTime()+"");
+        mainTime.setText(weather.getTime() + "");
     }
+
 
     @Override
     protected void onStart() {
@@ -223,6 +271,12 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
     protected void onStop() {
         mPresenter.onStop();
         super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(this);
     }
 
     @Override
@@ -254,10 +308,43 @@ public class MainActivity extends RuntimePermissionsActivity implements MVP.Requ
 
     @Override
     public void onWeatherResived(Weather weather) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "City");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT, weather.getCityName());
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
         this.weather = weather;
         progress.dismiss();
         setupViews();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        //Hey, a non null location! Sweet!
+
+        //remove location callback:
+        locationManager.removeUpdates(this);
+
+        //open the map:
+        lat = location.getLatitude();
+        lon = location.getLongitude();
+        mPresenter.onGetLocation(lat, lon);
+//        Toast.makeText(MainActivity.this, "latitude:" + lat + " longitude:" + lon, Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
 }
 

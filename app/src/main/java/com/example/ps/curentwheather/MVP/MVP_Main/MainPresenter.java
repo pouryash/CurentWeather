@@ -55,7 +55,13 @@ public class MainPresenter implements MVP.ProvidedPresenterOps,
     @Override
     public void onInternetNotAvailable() {
         List<Weather> list = mModel.selectWeathers();
-        onResive(mModel.selectWeathers().get(0));
+
+        if (list.size() == 0){
+            mView.get().showToast(Toast.makeText(con,"Please Cheack Your Internet Connection And Try Again!",Toast.LENGTH_LONG));
+            mView.get().getActivityContext1().finish();
+        }else {
+            onResive(mModel.selectWeathers().get(0));
+        }
     }
 
 
@@ -77,5 +83,6 @@ public class MainPresenter implements MVP.ProvidedPresenterOps,
     @Override
     public void onError(String message) {
         mView.get().showToast(Toast.makeText(con,message,Toast.LENGTH_LONG));
+        onInternetNotAvailable();
     }
 }

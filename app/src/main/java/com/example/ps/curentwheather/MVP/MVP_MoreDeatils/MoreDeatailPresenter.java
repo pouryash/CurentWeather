@@ -59,6 +59,7 @@ MVP.RequiredPresenterOps{
     @Override
     public void onErrorWeather(String message) {
         mView.get().showToast(Toast.makeText(mView.get().getAppContext1(),message,Toast.LENGTH_LONG));
+        onInternetNotAvailable();
     }
 
     @Override
@@ -69,6 +70,7 @@ MVP.RequiredPresenterOps{
     @Override
     public void onErrorHourWeather(String message) {
         mView.get().showToast(Toast.makeText(mView.get().getAppContext1(),message,Toast.LENGTH_LONG));
+        onInternetNotAvailable();
     }
 
     @Override
@@ -80,5 +82,6 @@ MVP.RequiredPresenterOps{
     public void onErrorDaysWeather(String message) {
 
         mView.get().showToast(Toast.makeText(mView.get().getAppContext1(),message,Toast.LENGTH_LONG));
+        onInternetNotAvailable();
     }
 }

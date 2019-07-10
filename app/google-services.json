@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "717766069658",
+    "firebase_url": "https://curentweather-cd57d.firebaseio.com",
+    "project_id": "curentweather-cd57d",
+    "storage_bucket": "curentweather-cd57d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717766069658:android:f7e50ba33cbd3371",
+        "android_client_info": {
+          "package_name": "com.example.ps.curentwheather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717766069658-e8qgsm0rrolkinmot5qtjmu04itkefv5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ps.curentwheather",
+            "certificate_hash": "3e9e9ace708ed20927b750cd4e9adbbcfe1c1746"
+          }
+        },
+        {
+          "client_id": "717766069658-bdv7mek4hb2qufptnec4o37uq9iu7isa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6cv8XTyvnLiuOSvJaq9Ulops4WT17mXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717766069658-bdv7mek4hb2qufptnec4o37uq9iu7isa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
