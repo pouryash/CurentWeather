@@ -61,7 +61,7 @@ public class HourWeatherAdp extends RecyclerView.Adapter<HourWeatherAdp.HourVh> 
     void bindWeather(Weather weather){
 
         Glide.with(context).load(Commen.getIconDay(weather.getIcon()))
-                .apply(new RequestOptions().override(72,72)).into(tempIv);
+                .apply(new RequestOptions()).into(tempIv);
 
         timeTv.setText(weather.getTime()+":00");
 

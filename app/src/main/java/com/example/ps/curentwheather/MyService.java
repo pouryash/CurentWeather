@@ -24,7 +24,6 @@ public class MyService extends FirebaseMessagingService {
 
         showNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
 
-
     }
 
     private void showNotification(String title, String body) {

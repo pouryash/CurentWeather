@@ -61,7 +61,7 @@ public class DaysWeatherAdp extends RecyclerView.Adapter<DaysWeatherAdp.DaysWeat
 
         public void bindDaysWeather(Weather weather) {
             Glide.with(context).load(Commen.getIconDay(weather.getIcon()))
-                    .apply(new RequestOptions().override(72,72)).into(tempIv);
+                    .apply(new RequestOptions()).into(tempIv);
             dayTv.setText(weather.getDay());
             String text = "<font color='white'>" + Math.round(weather.getMaxTemprature()) + "°"
                     + "</font><font color='#C3E3F1'>/" + Math.round(weather.getMinTemprature()) + "°" + "</font>";

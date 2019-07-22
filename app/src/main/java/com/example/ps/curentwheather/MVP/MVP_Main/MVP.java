@@ -18,7 +18,7 @@ interface RequiredViewOps{
     Context getAppContext1();
     Activity getActivityContext1();
     void showToast(Toast toast);
-    void onWeatherResived(Weather weather);
+    void onWeatherResived(Weather weather,Boolean isUpdated);
 
 }
 
@@ -28,15 +28,16 @@ interface ProvidedPresenterOps {
     void onStart();
     void onStop();
     void onCreate();
+    void onPause();
     void onGetLocation(double lat,double lon);
     void PermissionsGranted(int requestCode);
-    void onInternetNotAvailable();
+    void getOfflineWeather();
 }
 
     interface RequiredPresenterOps {
         Context getAppContext();
         Context getActivityContext();
-        void onResive(Weather weather);
+        void onResive(Weather weather,Boolean isUpdated);
         void onError(String message);
 
     }

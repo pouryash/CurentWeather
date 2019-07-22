@@ -3,6 +3,8 @@ package com.example.ps.curentwheather.Data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class DBSchema extends SQLiteOpenHelper {

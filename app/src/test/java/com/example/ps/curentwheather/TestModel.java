@@ -1,27 +1,54 @@
-package com.example.ps.curentwheather.Data;
+package com.example.ps.curentwheather;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.Log;
 
-import com.example.ps.curentwheather.AddAsyncTask;
-import com.example.ps.curentwheather.Commen;
+import androidx.core.content.ContextCompat;
+
+import com.example.ps.curentwheather.Data.DBSchema;
 import com.example.ps.curentwheather.Model.Weather;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.internal.builders.JUnit3Builder;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DAO {
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    private DBSchema mHelper;
-    public Context context;
-    public static final String SORT_ORDER_DEFULT = DBSchema.COLUMN_ID + " DESC";
+@RunWith(RobolectricTestRunner.class)
+@Config(manifest = "/src/main/AndroidManifest.xml")
+public class TestModel {
 
-    public DAO(Context context) {
-        this.mHelper = new DBSchema(context);
-        this.context = context;
+    DBSchema mHelper;
+    String SORT_ORDER_DEFULT;
+    Context context;
+
+    @Before
+    public void setup() {
+        context = RuntimeEnvironment.application;
+        mHelper = new DBSchema(context);
+        SORT_ORDER_DEFULT = mHelper.COLUMN_ID + " DESC";
     }
 
 
@@ -33,7 +60,11 @@ public class DAO {
         return mHelper.getWritableDatabase();
     }
 
-    public void inserWeather(Weather weather) {
+    @Test
+    public void inserWeather() {
+
+        Weather weather = this.fakeData();
+
 //        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues value = new ContentValues();
 
@@ -51,28 +82,40 @@ public class DAO {
         value.put(mHelper.COLUMN_DAY, weather.getDay());
 
         long id = getWriteDB().insert(mHelper.TABLE_WEATHER, null, value);
+        assertTrue(id > -1);
         getReadDB().close();
     }
 
-    public void inserHoursWeather(List<Weather> weathers,AddAsyncTask.onInsertTaskFinished onInsertTaskFinished) {
-//        ContentValues value = new ContentValues();
-//
-//
-//        for (int i = 0; i < weathers.size(); i++) {
-//
-//            value.put(mHelper.COLUMN_WEATHER_TEMPRTURE, weathers.get(i).getWeatherTemprature());
-//            value.put(mHelper.COLUMN_TIME, weathers.get(i).getTime());
-//            value.put(mHelper.COLUMN_ICON, weathers.get(i).getIcon());
-//
-//            long id = getWriteDB().insert(mHelper.TABLE_HOURS_WEATHER, null, value);
-//        }
-//        getReadDB().close();
+    @Test
+    public void inserHoursWeather() {
+        List<Weather> weathers = new ArrayList<>();
+        weathers.add(fakeData());
+        weathers.add(fakeData());
+        weathers.add(fakeData());
+        ContentValues value = new ContentValues();
 
-        AddAsyncTask task = new AddAsyncTask(context , weathers , onInsertTaskFinished );
-        task.execute();
+
+        for (int i = 0; i < weathers.size(); i++) {
+
+            value.put(mHelper.COLUMN_WEATHER_TEMPRTURE, weathers.get(i).getWeatherTemprature());
+            value.put(mHelper.COLUMN_TIME, weathers.get(i).getTime());
+            value.put(mHelper.COLUMN_ICON, weathers.get(i).getIcon());
+
+            long id = getWriteDB().insert(mHelper.TABLE_HOURS_WEATHER, null, value);
+            assertTrue(id > -1);
+        }
+        getReadDB().close();
+
     }
 
-    public void inserDaysWeather(List<Weather> weathers) {
+    @Test
+    public void inserDaysWeather() {
+
+        List<Weather> weathers = new ArrayList<>();
+        weathers.add(fakeData());
+        weathers.add(fakeData());
+        weathers.add(fakeData());
+
         ContentValues value = new ContentValues();
 
 
@@ -84,6 +127,7 @@ public class DAO {
             value.put(mHelper.COLUMN_ICON, weathers.get(i).getIcon());
 
             long id = getWriteDB().insert(mHelper.TABLE_DAYS_WEATHER, null, value);
+            assertTrue(id > -1);
         }
         getReadDB().close();
     }
@@ -125,8 +169,16 @@ public class DAO {
         return list;
     }
 
-    public List<Weather> SelectAllHoursWeather() {
+    @Test
+    public void SelectAllHoursWeather() {
 
+        AddAsyncTask addAsyncTask = mock(AddAsyncTask.class);
+        Mockito.when(addAsyncTask.fakeData()).thenReturn(null);
+        Weather weather1 = addAsyncTask.fakeData();
+        //means verify that fakedata called atleast 1 time
+        verify(addAsyncTask, atLeastOnce()).fakeData();
+
+        inserHoursWeather();
         List<Weather> list = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + mHelper.TABLE_HOURS_WEATHER + " ORDER BY "
@@ -151,7 +203,7 @@ public class DAO {
 
         Collections.reverse(list);
 
-        return list;
+        assertTrue(list.size() > 0);
     }
 
     public List<Weather> SelectAllDaysWeather() {
@@ -182,7 +234,13 @@ public class DAO {
         return list;
     }
 
-    public int updateHoursWeather(List<Weather> weathers) {
+    @Test
+    public void updateHoursWeather() {
+
+        List<Weather> weathers = new ArrayList<>();
+        weathers.add(fakeData());
+        weathers.add(fakeData());
+        weathers.add(fakeData());
 
         ContentValues values = new ContentValues();
         for (int i = 0; i < weathers.size(); i++) {
@@ -191,13 +249,13 @@ public class DAO {
             values.put(mHelper.COLUMN_TIME, weathers.get(i).getTime());
             values.put(mHelper.COLUMN_ICON, weathers.get(i).getIcon());
 
-            getWriteDB().update(mHelper.TABLE_HOURS_WEATHER, values, mHelper.COLUMN_ID + " = ?",
+            long id = getWriteDB().update(mHelper.TABLE_HOURS_WEATHER, values, mHelper.COLUMN_ID + " = ?",
                     new String[]{String.valueOf(i)});
+
+            assertTrue(id > -1);
         }
 
         // updating row
-        return 1;
-
     }
 
     public int updateDaysWeather(List<Weather> weathers) {
@@ -212,7 +270,7 @@ public class DAO {
             values.put(mHelper.COLUMN_DAY, weathers.get(i).getDay());
 
             getWriteDB().update(mHelper.TABLE_DAYS_WEATHER, values, mHelper.COLUMN_ID + " = ?",
-                    new String[]{String.valueOf(i+1)});
+                    new String[]{String.valueOf(i + 1)});
         }
 
         // updating row
@@ -262,4 +320,24 @@ public class DAO {
         cursor.close();
         return note;
     }
+
+    public Weather fakeData() {
+
+        Weather weather = new Weather();
+        weather.setCityName("sanandaj");
+        weather.setWeatherName("sunny");
+        weather.setWeatherDescription("sun");
+        weather.setDay("sunday");
+        weather.setMaxTemprature(39);
+        weather.setMinTemprature(15);
+        weather.setIcon("1d0");
+        weather.setCountry("IR");
+        weather.setPressure(10);
+        weather.setHumidity(15);
+        weather.setId(1);
+
+        return weather;
+
+    }
+
 }

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="111"
+        android:id="@+id/Exit_Menu"
+        android:title="Exit"
         android:actionLayout="@layout/activity_more_details"
         android:visible="true"
         />

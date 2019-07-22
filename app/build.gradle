@@ -16,11 +16,14 @@ android {
         vectorDrawables.useSupportLibrary = true
 
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     buildTypes {
 
         release {
-            multiDexKeepFile file('multidex-config.txt')
-            multiDexKeepProguard file('multidex-config.pro')
+//            multiDexKeepFile file('multidex-config.txt')
+//            multiDexKeepProguard file('multidex-config.pro')
             minifyEnabled true
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -36,7 +39,9 @@ dependencies {
     implementation 'androidx.fragment:fragment:1.2.0-alpha01'
     implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
-    implementation 'com.google.firebase:firebase-inappmessaging-display:18.0.1'
+    implementation 'com.google.android.gms:play-services-analytics:17.0.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:18.0.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
@@ -55,5 +60,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation "org.robolectric:robolectric:4.0"
+    implementation 'com.gauravbhola.ripplepulsebackground:library:1.0.0'
 
 }

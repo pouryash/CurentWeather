@@ -16,7 +16,7 @@ public interface MVP {
         Activity getActivityContext1();
         void showToast(Toast toast);
         void onWeatherResived(Weather weather);
-        void onHourWeatherResived(List<Weather> weathers);
+        void onHourWeatherResived(List<Weather> weathers,Boolean isUpdated);
         void onDaysWeatherResived(List<Weather> weathers);
     }
 
@@ -24,7 +24,7 @@ public interface MVP {
 
         void onStart();
         void onGetLocation(double lat,double lon);
-        void onInternetNotAvailable();
+        void getOfflineWeather();
     }
 
     interface RequiredPresenterOps{
@@ -32,7 +32,7 @@ public interface MVP {
         Context getActivityContext();
         void onResiveWeather(Weather weather);
         void onErrorWeather(String message);
-        void onResiveHourWeather(List<Weather> weathers);
+        void onResiveHourWeather(List<Weather> weathers ,Boolean isUpdated);
         void onErrorHourWeather(String message);
         void onResiveDaysWeather(List<Weather> weathers);
         void onErrorDaysWeather(String message);

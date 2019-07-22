@@ -6,6 +6,7 @@ import com.android.volley.NetworkError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.example.ps.curentwheather.AddAsyncTask;
 import com.example.ps.curentwheather.Api.ApiService;
 import com.example.ps.curentwheather.Data.DAO;
 import com.example.ps.curentwheather.Model.Weather;
@@ -18,7 +19,7 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
     ApiService apiService;
     DAO mDAO;
 
-    public MoreDetailModel(MVP.RequiredPresenterOps mPresenter , Context context) {
+    public MoreDetailModel(MVP.RequiredPresenterOps mPresenter, Context context) {
         this.mPresenter = mPresenter;
         mDAO = new DAO(context);
     }
@@ -26,14 +27,14 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
 
     @Override
     public void insertWeather(double lat, double lon) {
-        if (selectWeathers().size() == 1){
-            final ApiService apiService = new ApiService(mPresenter.getAppContext(),lat,lon);
+        if (selectWeathers().size() == 1) {
+            final ApiService apiService = new ApiService(mPresenter.getAppContext(), lat, lon);
             apiService.getWeather(new ApiService.OnResultCallBack<Weather>() {
                 @Override
                 public void OnWeatherRecived(Weather weather) {
 //                    mPresenter.onResive(weather);
                     updateWeather(weather);
-                    List<Weather> list =selectWeathers();
+                    List<Weather> list = selectWeathers();
                     mPresenter.onResiveWeather(selectWeathers().get(0));
                 }
 
@@ -54,15 +55,15 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
 
                     } else {
 
-                        mPresenter.onErrorWeather(error+"");
+                        mPresenter.onErrorWeather(error + "");
                     }
                 }
 
 
             });
 
-        }else {
-            final ApiService apiService = new ApiService(mPresenter.getAppContext(),lat,lon);
+        } else {
+            final ApiService apiService = new ApiService(mPresenter.getAppContext(), lat, lon);
             apiService.getWeather(new ApiService.OnResultCallBack<Weather>() {
                 @Override
                 public void OnWeatherRecived(Weather weather) {
@@ -88,7 +89,7 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
 
                     } else {
 
-                        mPresenter.onErrorWeather(error+"");
+                        mPresenter.onErrorWeather(error + "");
                     }
                 }
 
@@ -112,14 +113,14 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
         apiService = new ApiService(mPresenter.getAppContext(), lat, lon);
 
 
-        if (selectHoursWeathers().size() > 0){
+        if (selectHoursWeathers().size() > 0) {
             apiService.getHourWeather(new ApiService.onHourWeatherCallBack<Weather>() {
                 @Override
                 public void OnHourWeatherRecived(List<Weather> response) {
-                    mPresenter.onResiveHourWeather(response);
+//                    mPresenter.onResiveHourWeather(response);
 
                     updateHoursWeather(response);
-                    mPresenter.onResiveHourWeather(selectHoursWeathers());
+                    mPresenter.onResiveHourWeather(selectHoursWeathers(),true);
                 }
 
                 @Override
@@ -146,14 +147,19 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
                 }
             });
 
-        }else {
+        } else {
 
             apiService.getHourWeather(new ApiService.onHourWeatherCallBack<Weather>() {
                 @Override
                 public void OnHourWeatherRecived(List<Weather> response) {
 
-                    mDAO.inserHoursWeather(response);
-                    mPresenter.onResiveHourWeather(selectHoursWeathers());
+                    mDAO.inserHoursWeather(response, new AddAsyncTask.onInsertTaskFinished() {
+                        @Override
+                        public void onInsertTaskFinished() {
+                            mPresenter.onResiveHourWeather(selectHoursWeathers(), true);
+                        }
+                    });
+
                 }
 
                 @Override
@@ -194,7 +200,7 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
 
     @Override
     public void insertDaysWeather(double lat, double lon) {
-        if (selectDaysdWeathers().size() > 0){
+        if (selectDaysdWeathers().size() > 0) {
 
             apiService = new ApiService(mPresenter.getAppContext(), lat, lon);
             apiService.getDaysWeather(new ApiService.onDaysWeatherCallBack<Weather>() {
@@ -227,7 +233,7 @@ public class MoreDetailModel implements MVP.PrvidedModelMoreDetailOps {
                 }
             });
 
-        }else {
+        } else {
             apiService = new ApiService(mPresenter.getAppContext(), lat, lon);
             apiService.getDaysWeather(new ApiService.onDaysWeatherCallBack<Weather>() {
                 @Override

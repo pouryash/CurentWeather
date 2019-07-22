@@ -88,6 +88,7 @@ public class ApiService {
                 error.printStackTrace();
             }
         });
+//        request.setRetryPolicy(new Re)
         request = Volley.newRequestQueue(context).add(jsonArrayRequest);
 
     }

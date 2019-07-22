@@ -33,7 +33,7 @@ DAO mDAO;
 //                    mPresenter.onResive(weather);
                     updateWeather(weather);
                     List<Weather> list =selectWeathers();
-                    mPresenter.onResive(selectWeathers().get(0));
+                    mPresenter.onResive(selectWeathers().get(0),true);
                 }
 
                 @Override
@@ -67,7 +67,7 @@ DAO mDAO;
                 public void OnWeatherRecived(Weather weather) {
 //                    mPresenter.onResive(weather);
                     mDAO.inserWeather(weather);
-                    mPresenter.onResive(selectWeathers().get(0));
+                    mPresenter.onResive(selectWeathers().get(0),true);
                 }
 
                 @Override

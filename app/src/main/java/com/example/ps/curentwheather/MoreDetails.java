@@ -12,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +22,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -38,9 +39,6 @@ import com.example.ps.curentwheather.Adapter.HourWeatherAdp;
 import com.example.ps.curentwheather.MVP.MVP_MoreDeatils.MVP;
 import com.example.ps.curentwheather.MVP.MVP_MoreDeatils.MoreDeatailPresenter;
 import com.example.ps.curentwheather.Model.Weather;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,11 +70,10 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     ProgressDialog progress;
     //    FusedLocationProviderClient clint;
     Weather weather;
-    double lat, lon;
-    Intent intentThatCalled;
-    public LocationManager locationManager;
-    public Criteria criteria;
-    public String bestProvider;
+    Location location = new Location("");
+    LocationManager locationManager;
+    Criteria criteria;
+    String bestProvider;
 
     @Inject
     MVP.PrvidedPresenterOps mPresenter = new MoreDeatailPresenter(this, this);
@@ -88,15 +85,14 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
 
         initView();
+        toolbar.setTitle("");
         if (Commen.isNetworkConnectes(this)) {
-            AndroidService.getInstance().statusCheck(this);
-            intentThatCalled = getIntent();
+            mPresenter.getOfflineWeather();
+            AndroidService.getInstance().GpsEnabled(this, swipeRefreshLayout);
             getLocation();
-            mPresenter.onGetLocation(lat, lon);
 
         } else {
-            toolbar.setTitle("");
-            mPresenter.onInternetNotAvailable();
+            mPresenter.getOfflineWeather();
         }
 
     }
@@ -109,12 +105,7 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
     private void initView() {
 
-        progress = new ProgressDialog(this);
-        progress.setMessage("Updating...");
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.setIndeterminate(true);
-        progress.setCanceledOnTouchOutside(false);
-        progress.show();
+
         root = findViewById(R.id.moreDetail_Root);
         swipeRefreshLayout = findViewById(R.id.more_detail_swipTORefresh);
         humidityProgressBar = findViewById(R.id.circularProgressBar2);
@@ -128,9 +119,18 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
         cityTv = findViewById(R.id.moreDetail_CityTv);
         min_MaxTv = findViewById(R.id.moreDitail_Min_MaxTv);
         tempTv = findViewById(R.id.moreDetail_TempTv);
-        lat = getIntent().getDoubleExtra("lat", 0);
-        lon = getIntent().getDoubleExtra("lon", 0);
+//        this.location.setLatitude(getIntent().getDoubleExtra("lat", 0));
+//        this.location.setLongitude(getIntent().getDoubleExtra("lon", 0));
+    }
 
+
+    void setupProgressdialog() {
+        progress = new ProgressDialog(this);
+        progress.setMessage("Updating...");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
     }
 
 //    void getLocation(){
@@ -221,8 +221,11 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     }
 
     @Override
-    public void onHourWeatherResived(List<Weather> weathers) {
+    public void onHourWeatherResived(List<Weather> weathers ,Boolean isUpdated) {
         weatherList = weathers;
+        if (isUpdated) {
+            progress.dismiss();
+        }
         hourRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         hourWeatherAdp = new HourWeatherAdp(weatherList, this);
         hourRv.setAdapter(hourWeatherAdp);
@@ -231,69 +234,78 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
     @Override
     public void onDaysWeatherResived(List<Weather> weathers) {
         daysweatherList = weathers;
-        daysRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        daysRv.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         daysWeatherAdp = new DaysWeatherAdp(daysweatherList, this);
         daysRv.setAdapter(daysWeatherAdp);
         if (swipeRefreshLayout.isRefreshing()) {
             Toast.makeText(MoreDetails.this, "Data is Updated", Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
         }
-        progress.dismiss();
+//        progress.dismiss();
 
 
     }
-//    void getLocation(){
-//        LocationManager manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-//        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-//            clint = LocationServices.getFusedLocationProviderClient(this);
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                return;
-//            }
-//            clint.getLastLocation().addOnSuccessListener(this,
-//                    new OnSuccessListener<Location>() {
-//                        @Override
-//                        public void onSuccess(Location location) {
-//                            lat = location.getLatitude();
-//                            lon = location.getLongitude();
-//                            mPresenter.onGetLocation(lat, lon);
-//                        }
-//                    });
-//        }
-//    }
 
     protected void getLocation() {
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        criteria = new Criteria();
-        bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+        double lat = getIntent().getDoubleExtra("lat", 0);
+        double lon = getIntent().getDoubleExtra("lon", 0);
+        if (lat != 0 && lon != 0) {
+            location.setLongitude(getIntent().getDoubleExtra("lon", 0));
+            location.setLatitude(getIntent().getDoubleExtra("lat", 0));
+            mPresenter.onGetLocation(location.getLatitude(), location.getLongitude());
 
-        //You can still do this if you like, you might get lucky:
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            Location location = locationManager.getLastKnownLocation(bestProvider);
-            if (location != null) {
-                Log.e("TAG", "GPS is on");
-                lat = location.getLatitude();
-                lon = location.getLongitude();
-                mPresenter.onGetLocation(lat, lon);
-            }
-//                Toast.makeText(MainActivity.this, "latitude:" + lat + " longitude:" + lon, Toast.LENGTH_SHORT).show();
 
         } else {
-            //This is what you need:
-            locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
+            locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            criteria = new Criteria();
+            bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
+
+            //You can still do this if you like, you might get lucky:
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Location location = locationManager.getLastKnownLocation(bestProvider);
+                if (location != null && location.getLatitude() != 0 && location.getLongitude() != 0) {
+                    Log.e("TAG", "GPS is on");
+                    this.location = location;
+                    mPresenter.onGetLocation(location.getLatitude(), location.getLongitude());
+                }
+//                Toast.makeText(MainActivity.this, "latitude:" + lat + " longitude:" + lon, Toast.LENGTH_SHORT).show();
+                else {
+                    //This is what you need:
+                    locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
+                }
+            }
         }
+        setupProgressdialog();
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.Exit_Menu:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onRefresh() {
         if (Commen.isNetworkConnectes(this)) {
             final LocationManager manager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                mPresenter.onGetLocation(lat, lon);
+                if (location == null || (location.getLatitude() == 0 && location.getLongitude() == 0)) {
+                    getLocation();
+                    mPresenter.onGetLocation(location.getLatitude(), location.getLongitude());
+                } else {
+                    mPresenter.onGetLocation(location.getLatitude(), location.getLongitude());
+                }
             } else {
-                AndroidService.getInstance().statusCheck(this);
+                AndroidService.getInstance().GpsEnabled(this, swipeRefreshLayout);
+                mPresenter.onGetLocation(location.getLatitude(), location.getLongitude());
             }
 
 
@@ -305,13 +317,14 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
     @Override
     public void onBackPressed() {
+
         super.onBackPressed();
-        this.finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        AndroidService.getInstance().statusCheck(this);
+        super.onActivityResult(requestCode, resultCode, data);
+        AndroidService.getInstance().GpsEnabled(this, swipeRefreshLayout);
         if (requestCode == 1) {
 
             getLocation();
@@ -320,12 +333,12 @@ public class MoreDetails extends AppCompatActivity implements MVP.RequiredViewOp
 
     @Override
     public void onLocationChanged(Location location) {
+
         locationManager.removeUpdates(this);
 
         //open the map:
-        lat = location.getLatitude();
-        lon = location.getLongitude();
-        mPresenter.onGetLocation(lat, lon);
+        this.location = location;
+        mPresenter.onGetLocation(location.getLatitude(), location.getLongitude());
     }
 
     @Override

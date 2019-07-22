@@ -33,11 +33,17 @@ MVP.RequiredPresenterOps{
     }
 
     @Override
-    public void onInternetNotAvailable() {
-        List<Weather> list = mModelMoreDetail.selectWeathers();
-        onResiveWeather(mModelMoreDetail.selectWeathers().get(0));
-        onResiveHourWeather(mModelMoreDetail.selectHoursWeathers());
-        onResiveDaysWeather(mModelMoreDetail.selectDaysdWeathers());
+    public void getOfflineWeather() {
+        List<Weather> listWeather = mModelMoreDetail.selectWeathers();
+        List<Weather> listDaysWeather = mModelMoreDetail.selectDaysdWeathers();
+        List<Weather> listHourWeather = mModelMoreDetail.selectHoursWeathers();
+        if (listWeather.size() != 0 || listHourWeather.size() != 0|| listDaysWeather.size() != 0){
+            onResiveWeather(mModelMoreDetail.selectWeathers().get(0));
+            onResiveHourWeather(mModelMoreDetail.selectHoursWeathers(), false);
+            onResiveDaysWeather(mModelMoreDetail.selectDaysdWeathers());
+        }else {
+            mView.get().showToast(Toast.makeText(con,"Please Cheack Your Internet Connection And Try Again!",Toast.LENGTH_LONG));
+        }
     }
 
 
@@ -59,18 +65,18 @@ MVP.RequiredPresenterOps{
     @Override
     public void onErrorWeather(String message) {
         mView.get().showToast(Toast.makeText(mView.get().getAppContext1(),message,Toast.LENGTH_LONG));
-        onInternetNotAvailable();
+        getOfflineWeather();
     }
 
     @Override
-    public void onResiveHourWeather(List<Weather> weathers) {
-        mView.get().onHourWeatherResived(weathers);
+    public void onResiveHourWeather(List<Weather> weathers,Boolean isUpdated) {
+        mView.get().onHourWeatherResived(weathers ,isUpdated);
     }
 
     @Override
     public void onErrorHourWeather(String message) {
         mView.get().showToast(Toast.makeText(mView.get().getAppContext1(),message,Toast.LENGTH_LONG));
-        onInternetNotAvailable();
+        getOfflineWeather();
     }
 
     @Override
@@ -82,6 +88,6 @@ MVP.RequiredPresenterOps{
     public void onErrorDaysWeather(String message) {
 
         mView.get().showToast(Toast.makeText(mView.get().getAppContext1(),message,Toast.LENGTH_LONG));
-        onInternetNotAvailable();
+        getOfflineWeather();
     }
 }

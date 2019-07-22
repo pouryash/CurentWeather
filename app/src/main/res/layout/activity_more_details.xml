@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--<ScrollView android:layout_height="match_parent"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:fillViewport="true"-->
-    <!--xmlns:android="http://schemas.android.com/apk/res/android" >-->
+<?xml version="1.0" encoding="utf-8"?><!--<ScrollView android:layout_height="match_parent"--><!--android:layout_width="match_parent"--><!--android:fillViewport="true"--><!--xmlns:android="http://schemas.android.com/apk/res/android" >-->
 
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/more_detail_swipTORefresh"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="wrap_content">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -18,6 +19,7 @@
         android:background="@drawable/background_more_day"
         android:orientation="vertical"
         tools:context=".MoreDetails">
+
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/moreDetail_toolbar"
@@ -31,19 +33,20 @@
 
             <ImageView
                 android:id="@+id/moreDetail_WeatherIv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="8dp"
-                tools:src="@drawable/ic_mosty_sunny_more_detail"
-                />
+                android:layout_marginEnd="@dimen/large_margin"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/ic_sunny" />
 
             <TextView
                 android:id="@+id/moreDetail_TempTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/large_margin_X2"
                 android:fontFamily="@font/sans_bold"
                 android:textColor="@color/colorWاhite"
                 android:textSize="40sp"
@@ -62,23 +65,36 @@
                 android:textSize="20sp"
                 tools:text="22°/15°" />
 
-            <TextView
-                android:id="@+id/moreDetail_CityTv"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/normal_margin"
+                android:gravity="center"
+                android:elevation="2dp"
+                android:layout_marginStart="@dimen/large_margin"
                 android:layout_below="@id/moreDitail_Min_MaxTv"
-                android:layout_marginStart="16dp"
-                android:background="@drawable/city_background"
-                android:drawableStart="@drawable/ic_location_on"
-                android:drawablePadding="4dp"
-                android:ellipsize="end"
-                android:gravity="end"
-                android:maxWidth="200dp"
-                android:paddingRight="8dp"
-                android:singleLine="true"
-                android:textColor="@color/colorWاhite"
-                android:textSize="20sp"
-                tools:text="Paris" />
+                android:background="@drawable/city_background">
+
+                <ImageView
+                    android:id="@+id/iv_location_MoreDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_location_on"/>
+
+                <TextView
+                    android:id="@+id/moreDetail_CityTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="end"
+                    android:maxWidth="200dp"
+                    android:singleLine="true"
+                    android:textColor="@color/colorWاhite"
+                    android:textSize="20sp"
+                    tools:text="Paris" />
+
+
+            </LinearLayout>
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -90,22 +106,21 @@
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/large_margin_X2"
             android:background="#fff" />
 
 
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/moreDetail_DayRv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/moreDetail_DayRv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/large_margin_X2"
+            android:layout_marginTop="@dimen/large_margin"
             android:layout_marginEnd="16dp"
             android:background="#fff" />
 
@@ -141,7 +156,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/large_margin_X2"
                 android:fontFamily="@font/sans_bold"
                 android:text="@string/more_detail_status"
                 android:textColor="@color/colorWاhite"
@@ -152,7 +167,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/large_margin_X2"
                 android:fontFamily="@font/sans_bold"
                 android:textColor="#ccc"
                 android:textSize="15sp"
@@ -163,8 +178,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/circularProgressBar2"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginStart="@dimen/large_margin_X2"
+                android:layout_marginBottom="@dimen/large_margin_X2"
                 android:fontFamily="@font/sans_bold"
                 android:maxWidth="270dp"
                 android:textColor="#ccc"
@@ -176,6 +191,8 @@
     </LinearLayout>
 
 
+</ScrollView>
+
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-<!--</ScrollView>-->
+    <!--</ScrollView>-->
